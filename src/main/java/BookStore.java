@@ -10,26 +10,26 @@ public class BookStore {
 	private List<Integer> books;
 
 	public static void main(String[] args) {
-	BookStore cart;
+		BookStore cart;
 
- 	cart = new BookStore();
- 	cart.books = new ArrayList<Integer>();
+ 		cart = new BookStore();
+ 		cart.books = new ArrayList<Integer>();
 
- 	cart.books.add(1);
- 	cart.books.add(1);
- 	cart.books.add(1);
- 	cart.books.add(2);
- 	cart.books.add(2);
- 	cart.books.add(3);
- 	cart.books.add(3); 	
- 	cart.books.add(3);
- 	cart.books.add(3);
-  	cart.books.add(4);
- 	cart.books.add(4);
- 	cart.books.add(5);
- 	cart.books.add(5);
-  	cart.books.add(5);  	
-  	cart.cost = cart.calculateBasketCost(cart.books);
+ 		cart.books.add(1);
+ 		cart.books.add(1);
+ 		cart.books.add(1);
+ 		cart.books.add(2);
+ 		cart.books.add(2);
+ 		cart.books.add(3);
+ 		cart.books.add(3); 	
+ 		cart.books.add(3);
+ 		cart.books.add(3);
+  		cart.books.add(4);
+ 		cart.books.add(4);
+ 		cart.books.add(5);
+ 		cart.books.add(5);
+  		cart.books.add(5);  	
+  		cart.cost = cart.calculateBasketCost(cart.books);
 
 	}
 
