@@ -71,8 +71,10 @@ public class BookStore {
 		cost = 0;
 		discountArr = new int[] {25,20,10,5,0}; //discount percentages
 
-		//convert sets of 3 and 5 to two sets of 4
-		if(set[0]>set[2]) //set[0] = number of sets of 5, and set[2] = number of sets of 3
+		/*convert sets of 3 and 5 to two sets of 4 to get maximum discount
+		  since discount from two sets of 4 > discount from one set of 3 and 5.
+		  Here set[0] = number of sets of 5 and set[2] = number of sets of 3*/
+		if(set[0]>set[2]) 
 			temp = set[2];
 		else
 			temp = set[0];
