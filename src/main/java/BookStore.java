@@ -39,7 +39,6 @@ public class BookStore {
 		int k = 0;
 
 		for (int temp: uniqueSet){
-		//i = Collections.frequency(books, temp);
 		bookFrequencies[k] = Collections.frequency(books, temp);;
 		k=k+1;
 
