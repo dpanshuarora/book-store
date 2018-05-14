@@ -4,89 +4,94 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class BookStore {
-	private double cost;
-	private List<Integer> books;
+	private static final int BOOKCOST = 8;
+	private static double cost;
+	public static HashMap<Integer, Double> discountPctMap = new HashMap<>();
+	static {
+		discountPctMap.put(1,0.0);
+		discountPctMap.put(2,0.05);
+		discountPctMap.put(3,0.1);
+		discountPctMap.put(4,0.2);
+		discountPctMap.put(5,0.25);
+	}
 
 	public static void main(String[] args) {
-		BookStore cart;
+		BookStore cart = new BookStore();
+        List<Integer> books = Arrays.asList(1,2,3,4,5,1,2,3,4,5,1);
 
- 		cart = new BookStore();
- 		cart.books = new ArrayList<Integer>();
-
- 		cart.books.add(1);
- 		cart.books.add(1);
- 		cart.books.add(1);
- 		cart.books.add(2);
- 		cart.books.add(2);
- 		cart.books.add(3);
- 		cart.books.add(3); 	
- 		cart.books.add(3);
- 		cart.books.add(3);
-  		cart.books.add(4);
- 		cart.books.add(4);
- 		cart.books.add(5);
- 		cart.books.add(5);
-  		cart.books.add(5);  	
-  		cart.cost = cart.calculateBasketCost(cart.books);
-
+  		cost = cart.calculateBasketCost(books);
+  		System.out.println(cost);
 	}
 
 	public double calculateBasketCost(List<Integer> books) {
-		int bookFrequencies[] = new int[5];
-		Set<Integer> uniqueSet = new HashSet<Integer>(books);
-		int k = 0;
+		ArrayList<Integer> bookFrequencies = new ArrayList<Integer>(5);
+		Set<Integer> uniqueSet = new HashSet<>(books);
 
-		for (int temp: uniqueSet){
-		bookFrequencies[k] = Collections.frequency(books, temp);;
-		k=k+1;
+		for (int bookId: uniqueSet){
+		bookFrequencies.add(Collections.frequency(books, bookId));
+		}
+
+		Collections.sort(bookFrequencies);
+		int set[] = new int[bookFrequencies.size()]; //set tells about the number of sets of 1,2,3,4,5 (respectively) that exist in the cart
+
+		int numberToSubtract;
+		int size = bookFrequencies.size();
+		for(int i = 0; i < size; i++){
+			if(bookFrequencies.get(i)!=0){
+				set[size-i-1] = bookFrequencies.get(i);
+				numberToSubtract = bookFrequencies.get(i);
+				for (int j = 0; j < size; j++){ //the number is subtracted from every element in bookFrequencies[]
+					bookFrequencies.set(j, bookFrequencies.get(j) - numberToSubtract); //subtracts the sets of books that have already been counted in set[]
+			}
+		}
 
 		}
-		Arrays.sort(bookFrequencies);
-		int set[] = new int[5]; //set is an int array that tells about the number of sets of 5,4,3,2 and 1 (respectively) that exist in the cart
-		
-		int numToSub; //number to subtract
-		for(int j=0; j<5; j++){
-			if(bookFrequencies[j]!=0){
-			set[j] = set[j] + bookFrequencies[j];
-			numToSub = bookFrequencies[j];
-			for (int l=0; l<5; l++){ //the number is subtacted from every element in bookFrequencies[]
-				bookFrequencies[l] = bookFrequencies[l] - numToSub; //subtracts the sets of books that have already been counted in set[]
-			}
-		} //end if
 
-		}//end for
-		
-		return costFromArray(set);
+		double finalCost = costOfEachSet(set);
+		for (int i = 0; i < set.length; i++) {
+			if(i+2 < set.length){
+				for( int j = i+2; j < set.length; j++){
+					finalCost = optimiseDiscount(i,j, set, finalCost);
+			}
+		}
+
+		}
+		return finalCost;
+
 	}
 
-	public double costFromArray(int[] set){
-		double cost;
-		double discountPct;
-		int[] discountArr;
-		int initcost;
-		int temp;
+	public double optimiseDiscount(int initLower, int initUpper, int[] set, double cost) {
+		
+		int min;
+		for (int lower = initLower, upper = initUpper; lower < upper; lower++, upper--){
+			
+			min = set[initLower];
+			
+			set[initUpper] -= min;
+			set[initLower] -= min;
+			set[upper-1] += min;
+			set[lower+1] += min;
 
-		cost = 0;
-		discountArr = new int[] {25,20,10,5,0}; //discount percentages
-
-		/*convert sets of 3 and 5 to two sets of 4 to get maximum discount
-		  since discount from two sets of 4 > discount from one set of 3 and 5.
-		  Here set[0] = number of sets of 5 and set[2] = number of sets of 3*/
-		if(set[0]>set[2]) 
-			temp = set[2];
-		else
-			temp = set[0];
-		set[1] = set[1] + temp * 2;
-		set[0] = set[0] - temp;
-		set[2] = set[2] - temp;
-
-		for (int i = 0; i < 5; i++) {
-			initcost = set[i] * 8 * (5-i); //cost of 5-i (5,4,3,2,1) books since it's a set of 5,4,3,2,1 respectively
-			discountPct = discountArr[i] * 0.01;
-			cost = cost + initcost - discountPct * initcost; //final cost
+			cost = Math.min(costOfEachSet(set), cost);
 		}
+		return cost;
+
+	}
+
+	public double costOfEachSet(int[] set) {
+
+		int initcost;
+		int setNum = 1;
+		double cost = 0;
+		for (int setFrequency : set) {
+			initcost = setFrequency * BOOKCOST * (setNum);
+			cost += initcost - discountPctMap.get(setNum) * initcost;
+			setNum++;
+		}
+
 		return cost;
 	}
 }
