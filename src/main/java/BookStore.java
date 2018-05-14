@@ -20,10 +20,9 @@ public class BookStore {
 
 	public static void main(String[] args) {
 		BookStore cart = new BookStore();
-        List<Integer> books = Arrays.asList(1,2,3,4,5,1,2,3,4,5,1);
-
-  		cost = cart.calculateBasketCost(books);
-  		System.out.println(cost);
+		List<Integer> books = Arrays.asList(1,2,3,4,5,1,2,3,4,5,1);
+		cost = cart.calculateBasketCost(books);
+		System.out.println(cost);
 	}
 
 	public double calculateBasketCost(List<Integer> books) {
